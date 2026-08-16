@@ -1,0 +1,50 @@
+.card {
+  margin-top: 16px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.card-heading h2 {
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.card-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- Danger zone ---------- */
+.danger-zone {
+  border: 1px solid var(--danger-soft);
+  background: var(--danger-soft);
+}
+
+.danger-zone .card-desc { color: var(--danger); opacity: 0.9; }
+.danger-zone h2 { color: var(--danger); }
+
+.danger-zone .btn-danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.danger-zone .btn-danger:hover {
+  background: var(--danger-hover, #B40E08);
+  border-color: var(--danger-hover, #B40E08);
+  color: #fff;
+}

@@ -1,0 +1,65 @@
+/* ---------- Save ---------- */
+.save-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px var(--accent-soft);
+  transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.save-btn svg { flex-shrink: 0; }
+
+.save-btn:hover { background: var(--accent-hover); box-shadow: 0 8px 20px var(--accent-soft); }
+.save-btn:active { transform: scale(0.97); }
+.save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ---------- Secondary ---------- */
+.secondary-actions {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.secondary-btn {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+}
+
+.secondary-btn svg { width: 15px; height: 15px; fill: currentColor; }
+
+.secondary-btn:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+.secondary-btn:active { transform: scale(0.97); }
+.secondary-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ---------- Focus ---------- */
+button.tool:focus-visible,
+.save-btn:focus-visible,
+.secondary-btn:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

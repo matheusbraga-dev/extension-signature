@@ -1,0 +1,27 @@
+#profile-editor {
+  min-height: 320px;
+  padding: 16px 18px;
+  background: var(--paper);
+  border: 1px solid var(--line-paper);
+  border-radius: var(--radius);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  overflow: auto;
+}
+
+#profile-editor:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+#profile-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+#profile-editor, #profile-editor * { font-size: inherit !important; }

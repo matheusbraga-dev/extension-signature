@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<title>M Signature</title>
+<link rel="stylesheet" href="parts/tokens.css">
+  <link rel="stylesheet" href="parts/base.css">
+  <link rel="stylesheet" href="parts/header.css">
+  <link rel="stylesheet" href="parts/forms.css">
+  <link rel="stylesheet" href="parts/toolbar.css">
+  <link rel="stylesheet" href="parts/editor.css">
+  <link rel="stylesheet" href="parts/actions.css">
+  <link rel="stylesheet" href="parts/status.css">
+</head>
+<body>
+  <div class="popup">
+    <div id="site-status-banner" class="site-banner">Verificando site...</div>
+
+    <header class="app-header">
+      <div class="brand-logo" aria-hidden="true">    
+          <svg class="brand-mark" width="34" height="20" viewBox="0 0 34 20" fill="none" aria-hidden="true">
+            <path d="M2 15C4 6 7 4 9 9C11 14 13 15 15 10C17 5 20 3 22 8C24 13 26 15 28 11C29.5 8 31 7 32 9"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">M Signature</span>
+        <span class="brand-sub">Editor de assinatura</span>
+      </div>
+    </header>
+
+    <div class="field profile-row">
+      <label for="profile-select">Perfil ativo</label>
+      <div class="select-wrap">
+        <select id="profile-select" class="profile-select" aria-label="Selecionar perfil de assinatura"></select>
+      </div>
+    </div>
+
+    <div class="toolbar" role="toolbar" aria-label="Formatação de texto">
+      <button class="tool" id="btn-bold" title="Negrito" aria-label="Negrito">B</button>
+      <button class="tool" id="btn-italic" title="Itálico" aria-label="Itálico">I</button>
+      <span class="tool-divider"></span>
+      <button class="tool tool-link" id="btn-link" title="Inserir link" aria-label="Inserir link">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M8 12l4-4"/>
+          <path d="M7 9L5.5 10.5a2.5 2.5 0 003.5 3.5L10.5 12.5"/>
+          <path d="M13 11l1.5-1.5a2.5 2.5 0 00-3.5-3.5L9.5 7.5"/>
+        </svg>
+        Link
+      </button>
+      <span class="tool-divider"></span>
+      <span class="tool-wrap">
+        <button class="tool tool-ph" id="btn-placeholder" title="Inserir placeholder" aria-label="Inserir placeholder">{ }</button>
+        <div id="placeholder-menu" class="ph-menu" role="menu"></div>
+      </span>
+    </div>
+
+    <div class="editor-wrap">
+      <div id="editor"
+           contenteditable="true"
+           role="textbox"
+           aria-multiline="true"
+           aria-label="Área de edição da assinatura"
+           data-placeholder="Comece a digitar sua assinatura..."></div>
+    </div>
+
+    <p class="hint">Selecione um trecho do texto e use as ferramentas acima para formatar.</p>
+    <p id="dirty-hint" class="hint dirty-hint">Você tem alterações não salvas.</p>
+
+    <button id="save-btn" class="save-btn">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <circle cx="10" cy="10" r="8" opacity=".35"/>
+        <circle cx="10" cy="10" r="3.5"/>
+      </svg>
+      <span id="save-btn-label">Salvar assinatura</span>
+    </button>
+
+    <div class="secondary-actions">
+      <button id="copy-btn" class="secondary-btn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        Copiar assinatura
+      </button>
+      <button id="options-btn" class="secondary-btn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.02 7.02 0 0 0-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84a.49.49 0 0 0-.48.41l-.36 2.54a7.02 7.02 0 0 0-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.13.22.4.29.59.22l2.39-.96c.5.38 1.04.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7.02 7.02 0 0 0 1.62-.94l2.39.96c.2.08.46 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 15.6 12 3.61 3.61 0 0 1 12 15.6z"/></svg>
+        Configurações
+      </button>
+    </div>
+
+    <p id="status" role="status" aria-live="polite">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="10" cy="10" r="8"/>
+        <path d="M6.5 10.2l2.3 2.3 4.7-4.8"/>
+      </svg>
+      Assinatura salva com sucesso!
+    </p>
+
+    <p class="shortcut-note">Atalhos padrão: <kbd>Alt</kbd> + <kbd>S</kbd> (inserir assinatura) e <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> (ativar extensão). Você pode alterar em <span class="mono">chrome://extensions/shortcuts</span>.</p>
+  </div>
+
+  <script src="../shared/constants.js"></script>
+  <script src="../shared/utils/sanitize.js"></script>
+  <script src="../shared/utils/normalizer.js"></script>
+  <script src="../shared/utils/logger.js"></script>
+  <script src="../shared/api/storage.js"></script>
+  <script src="popup-utils.js"></script>
+  <script src="popup-state.js"></script>
+  <script src="popup-editor.js"></script>
+  <script src="popup-actions.js"></script>
+  <script src="popup-banner.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

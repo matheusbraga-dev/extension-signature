@@ -1,0 +1,101 @@
+{
+  "manifest_version": 3,
+  "name": "M Signature Pro",
+  "version": "3.0",
+  "description": "Adiciona assinaturas customizadas nos comentários do Jira.",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.atlassian.net/*",
+    "*://mail.google.com/*"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.atlassian.net/*", "*://mail.google.com/*"],
+      "js": [
+        "src/shared/constants.js",
+        "src/shared/utils/sanitize.js",
+        "src/shared/utils/normalizer.js",
+        "src/shared/utils/logger.js",
+        "src/shared/api/storage.js",
+        "src/content/index.js",
+        "src/content/domUtils.js",
+        "src/content/injector.js",
+        "src/content/observer.js",
+        "src/content/gmail.js"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "src/background/index.js"
+  },
+  "icons": {
+    "16": "src/assets/icons/icon16.png",
+    "32": "src/assets/icons/icon32.png",
+    "48": "src/assets/icons/icon48.png",
+    "128": "src/assets/icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_title": "Configurar Assinatura",
+    "default_icon": {
+      "16": "src/assets/icons/icon16.png",
+      "32": "src/assets/icons/icon32.png"
+    }
+  },
+  "options_page": "src/options/index.html",
+  "commands": {
+    "activate-extension": {
+      "suggested_key": {
+        "default": "Alt+Shift+E"
+      },
+      "description": "Ativar a extensão M no campo atual"
+    },
+    "insert-signature": {
+      "suggested_key": {
+        "default": "Alt+S"
+      },
+      "description": "Inserir assinatura ativa no campo atual"
+    },
+    "insert-profile-1": {
+      "suggested_key": {
+        "default": "Alt+1"
+      },
+      "description": "Inserir o perfil de assinatura 1"
+    },
+    "insert-profile-2": {
+      "suggested_key": {
+        "default": "Alt+2"
+      },
+      "description": "Inserir o perfil de assinatura 2"
+    },
+    "insert-profile-3": {
+      "description": "Inserir o perfil de assinatura 3"
+    },
+    "insert-profile-4": {
+      "description": "Inserir o perfil de assinatura 4"
+    },
+    "insert-profile-5": {
+      "description": "Inserir o perfil de assinatura 5"
+    },
+    "insert-profile-6": {
+      "description": "Inserir o perfil de assinatura 6"
+    },
+    "insert-profile-7": {
+      "description": "Inserir o perfil de assinatura 7"
+    },
+    "insert-profile-8": {
+      "description": "Inserir o perfil de assinatura 8"
+    },
+    "insert-profile-9": {
+      "description": "Inserir o perfil de assinatura 9"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@media (max-width: 900px) {
+  .page { padding: 28px 18px 60px; }
+  .layout-grid { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+  .nav-btn { width: auto; flex: 1 1 45%; }
+  .sidebar-footer { display: none; }
+  .card { padding: 20px; }
+  .site-add { grid-template-columns: 1fr; }
+}

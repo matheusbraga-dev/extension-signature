@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurações - M Signature</title>
+<link rel="stylesheet" href="parts/tokens.css">
+<link rel="stylesheet" href="parts/base.css">
+<link rel="stylesheet" href="parts/sidebar.css">
+<link rel="stylesheet" href="parts/cards.css">
+<link rel="stylesheet" href="parts/forms.css">
+<link rel="stylesheet" href="parts/editor.css">
+<link rel="stylesheet" href="parts/lists.css">
+<link rel="stylesheet" href="parts/tabs.css">
+<link rel="stylesheet" href="parts/responsive.css">
+</head>
+<body>
+  <!-- Modal de Onboarding -->
+  <dialog id="onboarding-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-emoji" aria-hidden="true">✍️</div>
+      <h2 class="modal-title">Bem-vindo ao M Signature!</h2>
+      <p class="modal-text">Configure sua extensão em 3 passos rápidos:</p>
+      <ol class="modal-steps">
+        <li><span class="step-num">1</span>Crie e formate sua assinatura na aba <b>Perfis</b>.</li>
+        <li><span class="step-num">2</span>Autorize os domínios da sua empresa (ex: jira.empresa.com) na aba <b>Sites</b>.</li>
+        <li><span class="step-num">3</span>Use o atalho <b>Alt + S</b> no campo de comentário para injetar!</li>
+      </ol>
+      <button id="close-onboarding-btn" class="btn btn-primary btn-block" style="margin-top: 8px;">Entendi, vamos começar!</button>
+    </div>
+  </dialog>
+
+  <main class="page layout-grid">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+              <svg class="brand-mark" width="34" height="20" viewBox="0 0 34 20" fill="none" aria-hidden="true">
+                <path d="M2 15C4 6 7 4 9 9C11 14 13 15 15 10C17 5 20 3 22 8C24 13 26 15 28 11C29.5 8 31 7 32 9"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">M Signature</span>
+          <span class="brand-sub">Configurações</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-target="tab-perfis">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm0 9H4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1zm9-9h-7a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm0 9h-7a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1z"/></svg>
+          Perfis de Assinatura
+        </button>
+        <button class="nav-btn" data-target="tab-sites">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+          Sites Permitidos
+        </button>
+        <button class="nav-btn" data-target="tab-placeholders">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h2v12H4zm3 0h2v12H7zm6-2h-2v16h2zM8 6h2v12H8zm3 0h2v12h-2zm9-4h-3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3v2h2v-2h1V2h-3z"/></svg>
+          Placeholders
+        </button>
+        <button class="nav-btn" data-target="tab-history">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 1.42 4.37l-1.43 1.43A9 9 0 1 0 13 3zm-1 4v5l4.28 2.54.72-1.21-3.5-2.08V7H12z"/></svg>
+          Histórico de Ações
+        </button>
+        <button class="nav-btn" data-target="tab-advanced">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.02 7.02 0 0 0-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84a.49.49 0 0 0-.48.41l-.36 2.54a7.02 7.02 0 0 0-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.13.22.4.29.59.22l2.39-.96c.5.38 1.04.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7.02 7.02 0 0 0 1.62-.94l2.39.96c.2.08.46 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 15.6 12 3.61 3.61 0 0 1 12 15.6z"/></svg>
+          Avançado e Backup
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">Chrome · Manifest V3</div>
+    </aside>
+
+    <div class="content-area">
+      <header class="content-header">
+        <div class="content-header-title">
+          <h1 class="page-title">Configurações da extensão</h1>
+          <p class="page-sub">Gerencie suas assinaturas, sites permitidos e backups.</p>
+        </div>
+      </header>
+
+      <!-- Aba: Perfis -->
+      <section id="tab-perfis" class="tab-content active">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-heading">
+              <h2>Perfis de assinatura</h2>
+              <p class="card-desc">Crie, duplique e escolha qual perfil será inserido por padrão.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="profile-select">Perfil</label>
+            <div class="select-wrap"><select id="profile-select"></select></div>
+          </div>
+
+          <div class="row-actions">
+            <button id="add-profile-btn" class="btn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              Novo perfil
+            </button>
+            <button id="duplicate-profile-btn" class="btn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              Duplicar
+            </button>
+            <button id="remove-profile-btn" class="btn btn-danger">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              Excluir
+            </button>
+            <button id="set-active-btn" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              Definir como ativo
+            </button>
+          </div>
+
+          <div class="field">
+            <label for="profile-name">Nome do perfil</label>
+            <input id="profile-name" type="text" maxlength="40" placeholder="Ex: Cliente Externo">
+          </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <label for="profile-editor">HTML da assinatura</label>
+              <div class="ph-inserter">
+                <button id="insert-placeholder-btn" class="btn btn-sm">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h2v12H4zm3 0h2v12H7zm6-2h-2v16h2zM8 6h2v12H8zm3 0h2v12h-2zm9-4h-3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3v2h2v-2h1V2h-3z"/></svg>
+                  Inserir placeholder
+                </button>
+                <div id="options-placeholder-menu" class="ph-menu" role="menu"></div>
+              </div>
+            </div>
+            <div id="profile-editor" contenteditable="true" data-placeholder="Digite sua assinatura..."></div>
+            <p class="hint">Use <code>{{data}}</code> para inserir a data atual automaticamente.</p>
+          </div>
+
+          <button id="save-profile-btn" class="btn btn-primary btn-block">Salvar perfil</button>
+        </div>
+      </section>
+
+      <!-- Aba: Sites -->
+      <section id="tab-sites" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-heading">
+              <h2>Sites Permitidos</h2>
+              <p class="card-desc">Adicione os domínios onde a extensão deve injetar a assinatura.</p>
+            </div>
+          </div>
+
+          <div class="site-add">
+            <input id="new-site-input" type="text" placeholder="ex: jira.empresa.com" aria-label="Novo domínio">
+            <button id="add-site-btn" class="btn btn-primary">Adicionar</button>
+          </div>
+
+          <ul id="sites-list" class="site-list"></ul>
+        </div>
+      </section>
+
+      <!-- Aba: Placeholders -->
+      <section id="tab-placeholders" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-heading">
+              <h2>Placeholders personalizados</h2>
+              <p class="card-desc">Defina seus próprios atalhos de texto. Use <code>{{chave}}</code> na assinatura e ele será substituído na inserção.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="placeholders-list">Seus placeholders</label>
+            <ul id="placeholders-list" class="site-list"></ul>
+            <button id="add-placeholder-btn" class="btn" style="margin-top: 4px; align-self: flex-start;">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              Adicionar placeholder
+            </button>
+            <p class="hint">Dica: <code>{{data}}</code> já insere a data local automaticamente. Você pode criar, por exemplo, <code>{{cargo}}</code>, <code>{{telefone}}</code> ou <code>{{empresa}}</code>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Aba: Histórico -->
+      <section id="tab-history" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-heading">
+              <h2>Atividades Recentes</h2>
+              <p class="card-desc">Veja as últimas ações realizadas na extensão.</p>
+            </div>
+            <button id="clear-history-btn" class="btn btn-ghost btn-danger">Limpar</button>
+          </div>
+          <ul id="history-list" class="site-list"></ul>
+        </div>
+      </section>
+
+      <!-- Aba: Avançado -->
+      <section id="tab-advanced" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-heading">
+              <h2>Atalhos e Backup JSON</h2>
+              <p class="card-desc">Personalize os atalhos do teclado e exporte/importe suas configurações.</p>
+            </div>
+          </div>
+
+          <button id="open-shortcuts-btn" class="btn btn-block">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 12H5v-2h6v2zm0-4H5v-2h6v2zm0-4H5V7h6v2zm3 8v-6h6v6h-6z"/></svg>
+            Configurar Atalhos do Teclado
+          </button>
+
+          <div class="row-actions">
+            <button id="export-btn" class="btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+              Exportar JSON
+            </button>
+            <button id="import-btn" class="btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+              Importar JSON
+            </button>
+          </div>
+
+          <div class="field">
+            <label for="backup-json">Backup JSON</label>
+            <textarea id="backup-json" rows="5" placeholder="Cole o JSON aqui..."></textarea>
+          </div>
+        </div>
+
+        <div class="card danger-zone">
+          <div class="card-header">
+            <div class="card-heading">
+              <h2>Restaurar Extensão</h2>
+              <p class="card-desc">Isso apagará todos os perfis, sites e histórico permanentemente.</p>
+            </div>
+          </div>
+          <button id="reset-settings-btn" class="btn btn-danger btn-block">Restaurar Padrões de Fábrica</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <p id="status" role="status"></p>
+
+  <script src="../shared/constants.js"></script>
+  <script src="../shared/utils/sanitize.js"></script>
+  <script src="../shared/utils/normalizer.js"></script>
+  <script src="../shared/utils/logger.js"></script>
+  <script src="../shared/api/storage.js"></script>
+  <script src="app-state.js"></script>
+  <script src="profiles.js"></script>
+  <script src="sites.js"></script>
+  <script src="placeholders.js"></script>
+  <script src="history.js"></script>
+  <script src="advanced.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
