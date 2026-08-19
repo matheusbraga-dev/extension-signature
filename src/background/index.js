@@ -20,7 +20,8 @@ const CONTENT_SCRIPTS = [
     'src/content/domUtils.js',
     'src/content/injector.js',
     'src/content/observer.js',
-    'src/content/gmail.js'
+    'src/content/gmail.js',
+    'src/content/cervello.js'
 ];
 
 async function ensureStorageMigration() {
@@ -48,10 +49,18 @@ function getTabById(tabId) {
     });
 }
 
+async function getEffectiveAllowedSites() {
+    const state = await getStateFromSync();
+    // Garante que os domínios padrão (declarados no manifest) sempre sejam
+    // permitidos, mesmo que a lista gravada no storage esteja desatualizada
+    // (ex.: usuários que instalaram antes de um novo domínio padrão).
+    const merged = [...(state.allowedSites || []), ...DEFAULT_ALLOWED_SITES];
+    return [...new Set(merged)];
+}
+
 async function isUrlAllowed(url) {
     if (!url) return false;
-    const state = await getStateFromSync();
-    const allowedSites = state.allowedSites || DEFAULT_ALLOWED_SITES;
+    const allowedSites = await getEffectiveAllowedSites();
     return isAllowedUrl(url, allowedSites);
 }
 
@@ -92,7 +101,7 @@ async function dispatchInsert(tabId, profileIndex) {
     if (!tabId) return;
 
     const [state, tab] = await Promise.all([getStateFromSync(), getTabById(tabId)]);
-    const allowedSites = state.allowedSites || DEFAULT_ALLOWED_SITES;
+    const allowedSites = [...(state.allowedSites || []), ...DEFAULT_ALLOWED_SITES];
     if (!tab || !isAllowedUrl(tab.url, allowedSites)) return;
 
     const payload = {
