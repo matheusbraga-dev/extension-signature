@@ -20,9 +20,40 @@ function isCervello() {
     return /(^|\.)cervelloesm\.com\.br$/i.test(location.hostname);
 }
 
+// O editor do Cervello é um Kendo UI Editor: um <iframe src=""> (about:blank,
+// same-origin) cujo HTML editável fica no body. Localiza esses iframes e
+// retorna o elemento editável real dentro do documento deles.
+function findKendoEditorTarget() {
+    const iframeSelectors = 'iframe.k-content, iframe[title*="Editable area"], iframe[data-role="editor"]';
+    const iframes = document.querySelectorAll(iframeSelectors);
+    if (iframes.length === 0) return null;
+
+    for (const iframe of iframes) {
+        let innerDoc;
+        try {
+            innerDoc = iframe.contentDocument;
+        } catch (_err) {
+            innerDoc = null;
+        }
+        if (!innerDoc || !innerDoc.body) continue;
+
+        const editor = innerDoc.body.isContentEditable
+            ? innerDoc.body
+            : innerDoc.querySelector('[contenteditable="true"]');
+
+        if (editor) {
+            return { targetElement: editor, isContentEditable: true };
+        }
+    }
+
+    return null;
+}
+
 function resolveTargetEditor() {
     const focused = findActiveEditorTarget();
     if (focused) return focused;
+    const kendo = findKendoEditorTarget();
+    if (kendo) return kendo;
     const editors = document.querySelectorAll('[contenteditable="true"], textarea, input[type="text"]');
     const last = editors[editors.length - 1];
     if (!last) return null;
