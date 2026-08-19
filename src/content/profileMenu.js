@@ -21,8 +21,39 @@ function createProfileMenu(options) {
     `;
     document.body.appendChild(menu);
 
+    // Painel de pré-visualização do perfil (aparece ao passar o mouse).
+    const preview = document.createElement('div');
+    preview.style.cssText = `
+        display: none; position: fixed; z-index: 2147483646; pointer-events: none;
+        background: #FFFFFF; border: 1px solid #DFE1E6; border-radius: 8px;
+        box-shadow: 0 12px 32px rgba(9, 30, 66, 0.2);
+        padding: 12px 14px; max-width: 320px; max-height: 240px;
+        overflow-y: auto; color: #172B4D; font-size: 13px; line-height: 1.45;
+    `;
+    document.body.appendChild(preview);
+
     function close() {
         menu.style.display = 'none';
+        preview.style.display = 'none';
+    }
+
+    function showPreview(anchor, html) {
+        preview.innerHTML = html || '';
+        if (!html) {
+            preview.style.display = 'none';
+            return;
+        }
+        preview.style.display = 'block';
+
+        const rect = anchor.getBoundingClientRect();
+        const gap = 12;
+        let left = rect.right + gap;
+        if (left + preview.offsetWidth > window.innerWidth - 8) {
+            left = Math.max(8, rect.left - gap - preview.offsetWidth);
+        }
+        const top = Math.max(8, Math.min(rect.top, window.innerHeight - 8 - preview.offsetHeight));
+        preview.style.left = `${left}px`;
+        preview.style.top = `${top}px`;
     }
 
     function open() {
@@ -43,16 +74,15 @@ function createProfileMenu(options) {
         header.style.cssText = 'font-size: 11px; font-weight: 700; color: #6B778C; padding: 6px 12px 2px; margin-bottom: 4px; border-bottom: 1px solid #EBECF0;';
         menu.appendChild(header);
 
-        const loading = document.createElement('div');
-        loading.textContent = 'Carregando perfis...';
-        loading.style.cssText = 'padding: 8px 12px; font-size: 12px; color: #6B778C;';
-        menu.appendChild(loading);
+        function clearBody() {
+            while (menu.lastChild && menu.lastChild !== header) {
+                menu.removeChild(menu.lastChild);
+            }
+        }
 
-        // Busca o estado mais recente direto do storage ao abrir, garantindo
-        // que o cache não atrase os dados exibidos.
-        loadStateFromStorage((currentState) => {
-            loading.remove();
-            const profiles = currentState.profiles || [];
+        function renderProfiles(state) {
+            clearBody();
+            const profiles = (state && Array.isArray(state.profiles)) ? state.profiles : [];
 
             if (profiles.length === 0) {
                 const empty = document.createElement('div');
@@ -64,6 +94,7 @@ function createProfileMenu(options) {
 
             profiles.forEach((profile, index) => {
                 const item = document.createElement('div');
+                item.dataset.profile = String(index);
                 item.textContent = profile.name;
                 item.style.cssText = `
                     padding: 8px 12px; cursor: pointer; font-size: 13px;
@@ -71,8 +102,20 @@ function createProfileMenu(options) {
                     transition: background 0.1s; display: block; white-space: nowrap;
                     overflow: hidden; text-overflow: ellipsis;
                 `;
-                item.onmouseover = () => item.style.background = '#F4F5F7';
-                item.onmouseout = () => item.style.background = 'transparent';
+                item.onmouseover = () => {
+                    item.style.background = '#F4F5F7';
+                    const hydrated = typeof applyDynamicPlaceholders === 'function'
+                        ? applyDynamicPlaceholders(profile.html, state.placeholders)
+                        : profile.html;
+                    const safe = typeof sanitizeSignatureHtml === 'function'
+                        ? sanitizeSignatureHtml(hydrated)
+                        : hydrated;
+                    showPreview(item, safe);
+                };
+                item.onmouseout = () => {
+                    item.style.background = 'transparent';
+                    preview.style.display = 'none';
+                };
 
                 item.addEventListener('mousedown', (ev) => {
                     ev.preventDefault();
@@ -85,8 +128,8 @@ function createProfileMenu(options) {
                         return;
                     }
 
-                    // Garante que a injeção use os dados recém-carregados.
-                    cachedState = currentState;
+                    // Garante que a injeção use os dados mais recentes.
+                    cachedState = state;
                     insertSignature(
                         target.targetElement,
                         target.isContentEditable,
@@ -97,7 +140,27 @@ function createProfileMenu(options) {
 
                 menu.appendChild(item);
             });
-        });
+        }
+
+        let rendered = false;
+
+        // Renderiza imediatamente a partir do cache (quando disponível), para
+        // nunca ficar preso em "Carregando perfis...", e depois atualiza via
+        // storage. Tem fallback por timeout caso o storage não responda.
+        if (cachedState) {
+            rendered = true;
+            renderProfiles(cachedState);
+        }
+
+        try {
+            loadStateFromStorage(renderProfiles);
+        } catch (_err) {
+            if (!rendered) renderProfiles(cachedState || createDefaultState());
+        }
+
+        setTimeout(() => {
+            if (!rendered) renderProfiles(cachedState || createDefaultState());
+        }, 1500);
     }
 
     // Fecha o menu clicando fora (fora do trigger e fora do próprio menu).
