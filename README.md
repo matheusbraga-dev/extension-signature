@@ -8,7 +8,7 @@ Extensão de navegador (**Manifest V3**) para o Google Chrome que injeta assinat
 - **Múltiplos perfis** de assinatura com perfil ativo (configuráveis em *Configurações*).
 - **Inserção rápida** via:
   - Botão nativo na toolbar do editor do Jira e do Gmail;
-  - **Botão flutuante no canto inferior direito no Cervello** (configurável em *Configurações → Avançado*);
+  - **Botão flutuante no canto inferior direito no Cervello** (arrastável e com posição persistida; configurável em *Configurações → Avançado*);
   - Atalhos de teclado (`Alt+S`, `Alt+1`, `Alt+2`);
   - Menu de contexto (clique com o botão direito em campos de texto).
 - **Placeholder dinâmico** `{{data}}` para inserir a data atual, além de **placeholders personalizados** (ex.: `{{cargo}}`, `{{telefone}}`) configuráveis na aba *Placeholders*.
@@ -61,6 +61,7 @@ Os atalhos podem ser alterados em `chrome://extensions/shortcuts`.
     ├── content/               # Scripts injetados nas páginas (Jira e Gmail)
     │   ├── index.js           #   Entrada: cache, inserção, mensagens
     │   ├── domUtils.js        #   Helpers de DOM (toast, localizar editores)
+    │   ├── profileMenu.js     #   Menu de perfis compartilhado (Jira/Gmail/Cervello)
     │   ├── injector.js        #   Botão + menu nativo na toolbar do Jira
     │   ├── observer.js        #   MutationObserver do DOM do Jira
     │   ├── gmail.js           #   Botão + menu na composição do Gmail

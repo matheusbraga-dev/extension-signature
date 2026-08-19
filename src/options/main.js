@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     profiles: [{ id: 'default', name: 'Padrão', html: sanitizeSignatureHtml(legacy) }],
                     allowedSites: [...DEFAULT_ALLOWED_SITES],
                     placeholders: [],
-                    showFloatingButton: true
+                    showFloatingButton: true,
+                    cervelloFabPosition: null
                 };
                 MOptions.persistState(() => {
                     removeLegacyState();

@@ -18,6 +18,7 @@ const CONTENT_SCRIPTS = [
     'src/shared/api/storage.js',
     'src/content/index.js',
     'src/content/domUtils.js',
+    'src/content/profileMenu.js',
     'src/content/injector.js',
     'src/content/observer.js',
     'src/content/gmail.js',

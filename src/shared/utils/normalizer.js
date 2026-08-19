@@ -32,6 +32,13 @@ function normalizeAllowedSites(rawSites, defaults) {
 
 // Placeholders personalizados: lista de { key, value }. As chaves são
 // case-insensitive e duplicadas são removidas.
+function normalizeFabPosition(raw) {
+    if (raw && typeof raw === 'object' && typeof raw.x === 'number' && typeof raw.y === 'number') {
+        return { x: raw.x, y: raw.y };
+    }
+    return null;
+}
+
 function normalizePlaceholders(raw) {
     const seen = new Set();
     const list = [];
@@ -57,7 +64,8 @@ function createDefaultState() {
         profiles: [{ id: 'default', name: 'Padrão', html: '' }],
         allowedSites: [...DEFAULT_ALLOWED_SITES],
         placeholders: [],
-        showFloatingButton: true
+        showFloatingButton: true,
+        cervelloFabPosition: null
     };
 }
 
@@ -90,8 +98,9 @@ function normalizeState(raw) {
     const allowedSites = normalizeAllowedSites(raw.allowedSites, DEFAULT_ALLOWED_SITES);
     const placeholders = normalizePlaceholders(raw.placeholders);
     const showFloatingButton = raw.showFloatingButton !== false;
+    const cervelloFabPosition = normalizeFabPosition(raw.cervelloFabPosition);
 
-    return { activeProfileId, profiles, allowedSites, placeholders, showFloatingButton };
+    return { activeProfileId, profiles, allowedSites, placeholders, showFloatingButton, cervelloFabPosition };
 }
 
 function stateFromStorage(syncObj, legacyHtml) {
@@ -107,7 +116,8 @@ function stateFromStorage(syncObj, legacyHtml) {
             }],
             allowedSites: [...DEFAULT_ALLOWED_SITES],
             placeholders: [],
-            showFloatingButton: true
+            showFloatingButton: true,
+            cervelloFabPosition: null
         };
     }
 

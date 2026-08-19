@@ -35,104 +35,21 @@ function injectMButtonIntoToolbar(toolbar) {
     btn.onmouseover = () => { btn.style.background = 'rgba(9, 30, 66, 0.08)'; btn.style.color = '#0A3A5C'; };
     btn.onmouseout = () => { btn.style.background = 'transparent'; btn.style.color = '#6B778C'; };
 
-    const menu = document.createElement('div');
-    menu.id = M_MENU_ID;
-    menu.style.cssText = `
-        display: none; position: fixed; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        background: #FFFFFF; border: 1px solid #DFE1E6; border-radius: 8px;
-        box-shadow: 0 12px 32px rgba(9, 30, 66, 0.25);
-        padding: 6px 0; z-index: 2147483647;
-        min-width: 260px; max-width: 90vw; max-height: 80vh; overflow-y: auto;
-    `;
-
-    // mousedown para interceptar o clique antes do Jira
-    btn.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        document.querySelectorAll(`#${M_MENU_ID}`).forEach((m) => {
-            if (m !== menu) m.style.display = 'none';
-        });
-
-        if (menu.style.display === 'block') {
-            menu.style.display = 'none';
-            return;
-        }
-
-        menu.innerHTML = '';
-        menu.style.display = 'block';
-
-        const header = document.createElement('div');
-        header.textContent = 'INSERIR ASSINATURA';
-        header.style.cssText = 'font-size: 11px; font-weight: 700; color: #6B778C; padding: 6px 12px 2px; margin-bottom: 4px; border-bottom: 1px solid #EBECF0;';
-        menu.appendChild(header);
-
-        const loading = document.createElement('div');
-        loading.textContent = 'Carregando perfis...';
-        loading.style.cssText = 'padding: 8px 12px; font-size: 12px; color: #6B778C;';
-        menu.appendChild(loading);
-
-        // Busca o estado mais recente direto do storage ao clicar, garantindo que o cache não atrase
-        loadStateFromStorage((currentState) => {
-            loading.remove();
-            const profiles = currentState.profiles || [];
-
-            if (profiles.length === 0) {
-                const empty = document.createElement('div');
-                empty.textContent = 'Nenhum perfil configurado.';
-                empty.style.cssText = 'padding: 8px 12px; font-size: 12px; color: #DE350B;';
-                menu.appendChild(empty);
-            } else {
-                profiles.forEach((profile, index) => {
-                    const item = document.createElement('div');
-                    item.textContent = profile.name;
-                    item.style.cssText = `
-                        padding: 8px 12px; cursor: pointer; font-size: 13px;
-                        color: #172B4D; font-family: -apple-system, sans-serif;
-                        transition: background 0.1s; display: block; white-space: nowrap;
-                        overflow: hidden; text-overflow: ellipsis;
-                    `;
-                    item.onmouseover = () => item.style.background = '#F4F5F7';
-                    item.onmouseout = () => item.style.background = 'transparent';
-
-                    item.addEventListener('mousedown', (ev) => {
-                        ev.preventDefault();
-                        ev.stopPropagation();
-                        menu.style.display = 'none';
-
-                        // Prioriza o editor atualmente focado (mesmo caminho dos
-                        // atalhos) e, se não houver, tenta pela estrutura da toolbar.
-                        const focused = findActiveEditorTarget();
-                        const targetEditor = focused
-                            ? focused.targetElement
-                            : findEditorFromToolbar(toolbar);
-                        const isContentEditable = focused ? focused.isContentEditable : true;
-
-                        if (targetEditor) {
-                            targetEditor.focus();
-                            // Atualiza a variável global temporariamente para a injeção usar os dados certos
-                            cachedState = currentState;
-                            insertSignature(targetEditor, isContentEditable, index);
-                        } else {
-                            showToast('Erro: Não foi possível localizar a área de texto do editor.');
-                        }
-                    });
-
-                    menu.appendChild(item);
-                });
-            }
-        });
-    });
-
-    // Fecha o menu clicando fora (fora do container e fora do próprio menu)
-    document.addEventListener('mousedown', (e) => {
-        if (!container.contains(e.target) && !menu.contains(e.target)) {
-            menu.style.display = 'none';
+    const ctrl = createProfileMenu({
+        trigger: btn,
+        menuId: M_MENU_ID,
+        useExecCommand: false,
+        resolveEditor: () => {
+            // Prioriza o editor atualmente focado (mesmo caminho dos atalhos)
+            // e, se não houver, tenta pela estrutura da toolbar.
+            const focused = findActiveEditorTarget();
+            if (focused) return focused;
+            const editor = findEditorFromToolbar(toolbar);
+            return editor ? { targetElement: editor, isContentEditable: true } : null;
         }
     });
+    attachMenuTrigger(btn, ctrl);
 
     container.appendChild(btn);
-    document.body.appendChild(menu);
     toolbar.appendChild(container);
 }
