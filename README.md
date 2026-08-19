@@ -1,6 +1,6 @@
 # M Signature Pro
 
-Extensão de navegador (**Manifest V3**) para o Google Chrome que injeta assinaturas ricas e templates de respostas nativamente nos editores do **Jira** (Atlassian Fabric Editor) e do **Gmail** (composição de e-mail).
+Extensão de navegador (**Manifest V3**) para o Google Chrome que injeta assinaturas ricas e templates de respostas nativamente nos editores do **Jira** (Atlassian Fabric Editor), do **Gmail** (composição de e-mail) e do **Cervello** (plataforma de chamados/ITSM).
 
 ## ✨ Funcionalidades
 
@@ -8,10 +8,11 @@ Extensão de navegador (**Manifest V3**) para o Google Chrome que injeta assinat
 - **Múltiplos perfis** de assinatura com perfil ativo (configuráveis em *Configurações*).
 - **Inserção rápida** via:
   - Botão nativo na toolbar do editor do Jira e do Gmail;
+  - **Botão flutuante no canto inferior direito no Cervello** (configurável em *Configurações → Avançado*);
   - Atalhos de teclado (`Alt+S`, `Alt+1`, `Alt+2`);
   - Menu de contexto (clique com o botão direito em campos de texto).
 - **Placeholder dinâmico** `{{data}}` para inserir a data atual, além de **placeholders personalizados** (ex.: `{{cargo}}`, `{{telefone}}`) configuráveis na aba *Placeholders*.
-- **Sites permitidos**: a extensão atua apenas nos domínios que você aprovar (ex.: `minhaempresa.atlassian.net`, `mail.google.com`), com permissão concedida dinamicamente.
+- **Sites permitidos**: a extensão atua apenas nos domínios que você aprovar (ex.: `minhaempresa.atlassian.net`, `mail.google.com`, `*.cervelloesm.com.br`), com permissão concedida dinamicamente.
 - **Sanitização de HTML** contra XSS e contra o bug do "emoji gigante" (remove estilos/tags não permitidas e converte emoji de imagem de volta para texto).
 - **Histórico de ações** e **backup/restauração** via JSON.
 - Suporte a **tema claro/escuro** (`prefers-color-scheme`).
@@ -25,9 +26,9 @@ Extensão de navegador (**Manifest V3**) para o Google Chrome que injeta assinat
 2. Abra `chrome://extensions`.
 3. Ative o **Modo do desenvolvedor** (canto superior direito).
 4. Clique em **Carregar sem compactação** e selecione a pasta do projeto (a que contém o `manifest.json`).
-5. Acesse um **Jira** (ex.: `*.atlassian.net`) ou o **Gmail** (`mail.google.com`) para o botão M aparecer na toolbar do editor.
+5. Acesse um **Jira** (ex.: `*.atlassian.net`), o **Gmail** (`mail.google.com`) ou o **Cervello** (`*.cervelloesm.com.br`) para o botão M aparecer na toolbar do editor (Jira/Gmail) ou flutuando no canto inferior direito (Cervello).
 
-> Domínios fora de `atlassian.net`/`mail.google.com` (ex.: um Jira próprio) precisam ser adicionados manualmente em **Configurações → Sites Permitidos** para conceder a permissão.
+> Domínios fora de `atlassian.net`/`mail.google.com`/`cervelloesm.com.br` (ex.: um Jira próprio) precisam ser adicionados manualmente em **Configurações → Sites Permitidos** para conceder a permissão.
 
 ## ⌨️ Atalhos padrão
 
@@ -62,7 +63,8 @@ Os atalhos podem ser alterados em `chrome://extensions/shortcuts`.
     │   ├── domUtils.js        #   Helpers de DOM (toast, localizar editores)
     │   ├── injector.js        #   Botão + menu nativo na toolbar do Jira
     │   ├── observer.js        #   MutationObserver do DOM do Jira
-    │   └── gmail.js           #   Botão + menu na composição do Gmail
+    │   ├── gmail.js           #   Botão + menu na composição do Gmail
+    │   └── cervello.js        #   Botão flutuante + menu no Cervello
     ├── popup/                 # Janela flutuante (index.html + namespace MPopup)
     │   ├── index.html         #   Estrutura + <link>/<script> das partes
     │   ├── popup-utils.js     #   Helpers puros (placeholders, texto)

@@ -56,7 +56,8 @@ function createDefaultState() {
         activeProfileId: 'default',
         profiles: [{ id: 'default', name: 'Padrão', html: '' }],
         allowedSites: [...DEFAULT_ALLOWED_SITES],
-        placeholders: []
+        placeholders: [],
+        showFloatingButton: true
     };
 }
 
@@ -88,8 +89,9 @@ function normalizeState(raw) {
     const activeProfileId = ids.has(raw.activeProfileId) ? raw.activeProfileId : profiles[0].id;
     const allowedSites = normalizeAllowedSites(raw.allowedSites, DEFAULT_ALLOWED_SITES);
     const placeholders = normalizePlaceholders(raw.placeholders);
+    const showFloatingButton = raw.showFloatingButton !== false;
 
-    return { activeProfileId, profiles, allowedSites, placeholders };
+    return { activeProfileId, profiles, allowedSites, placeholders, showFloatingButton };
 }
 
 function stateFromStorage(syncObj, legacyHtml) {
@@ -104,7 +106,8 @@ function stateFromStorage(syncObj, legacyHtml) {
                 html: typeof sanitizeSignatureHtml === 'function' ? sanitizeSignatureHtml(legacyHtml) : legacyHtml
             }],
             allowedSites: [...DEFAULT_ALLOWED_SITES],
-            placeholders: []
+            placeholders: [],
+            showFloatingButton: true
         };
     }
 

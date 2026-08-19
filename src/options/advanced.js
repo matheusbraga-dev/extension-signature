@@ -6,9 +6,23 @@
 window.MOptions = window.MOptions || {};
 
 MOptions.initAdvanced = function () {
-    const { openShortcutsBtn, exportBtn, importBtn, backupJson } = MOptions.refs;
+    const { openShortcutsBtn, exportBtn, importBtn, backupJson, fabToggle } = MOptions.refs;
 
     openShortcutsBtn.addEventListener('click', () => chrome.tabs.create({ url: 'chrome://extensions/shortcuts' }));
+
+    MOptions.renderFabToggle = function () {
+        if (fabToggle) fabToggle.checked = MOptions.state.showFloatingButton !== false;
+    };
+
+    if (fabToggle) {
+        fabToggle.addEventListener('change', () => {
+            MOptions.state.showFloatingButton = fabToggle.checked;
+            MOptions.persistState(() => {
+                MOptions.showStatus('Preferência salva.');
+                logAction('Visibilidade do botão flutuante atualizada', MOptions.renderHistory);
+            });
+        });
+    }
 
     exportBtn.addEventListener('click', () => {
         MOptions.updateSelectedProfileValues();

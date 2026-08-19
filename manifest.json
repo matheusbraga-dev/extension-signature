@@ -11,14 +11,15 @@
   ],
   "host_permissions": [
     "*://*.atlassian.net/*",
-    "*://mail.google.com/*"
+    "*://mail.google.com/*",
+    "*://*.cervelloesm.com.br/*"
   ],
   "optional_host_permissions": [
     "*://*/*"
   ],
   "content_scripts": [
     {
-      "matches": ["*://*.atlassian.net/*", "*://mail.google.com/*"],
+      "matches": ["*://*.atlassian.net/*", "*://mail.google.com/*", "*://*.cervelloesm.com.br/*"],
       "js": [
         "src/shared/constants.js",
         "src/shared/utils/sanitize.js",
@@ -29,7 +30,8 @@
         "src/content/domUtils.js",
         "src/content/injector.js",
         "src/content/observer.js",
-        "src/content/gmail.js"
+        "src/content/gmail.js",
+        "src/content/cervello.js"
       ]
     }
   ],

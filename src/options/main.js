@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         exportBtn: document.getElementById('export-btn'),
         importBtn: document.getElementById('import-btn'),
         backupJson: document.getElementById('backup-json'),
+        fabToggle: document.getElementById('fab-toggle'),
         placeholdersList: document.getElementById('placeholders-list'),
         addPlaceholderBtn: document.getElementById('add-placeholder-btn'),
         insertPlaceholderBtn: document.getElementById('insert-placeholder-btn'),
@@ -62,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             MOptions.renderSelectedProfile();
             MOptions.renderSitesList();
             MOptions.renderPlaceholders();
+            MOptions.renderFabToggle();
             return;
         }
 
@@ -72,7 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     activeProfileId: 'default',
                     profiles: [{ id: 'default', name: 'Padrão', html: sanitizeSignatureHtml(legacy) }],
                     allowedSites: [...DEFAULT_ALLOWED_SITES],
-                    placeholders: []
+                    placeholders: [],
+                    showFloatingButton: true
                 };
                 MOptions.persistState(() => {
                     removeLegacyState();
@@ -80,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     MOptions.renderSelectedProfile();
                     MOptions.renderSitesList();
                     MOptions.renderPlaceholders();
+                    MOptions.renderFabToggle();
                 });
                 return;
             }
@@ -89,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             MOptions.renderSelectedProfile();
             MOptions.renderSitesList();
             MOptions.renderPlaceholders();
+            MOptions.renderFabToggle();
         });
     });
 });

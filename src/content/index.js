@@ -81,6 +81,8 @@ function insertSignature(targetElement, isContentEditable, profileIndex, useExec
             // preserva o histórico de undo do editor.
             document.execCommand('insertHTML', false, signatureData);
         } else {
+            const before = targetElement.innerHTML;
+
             const dataTransfer = new DataTransfer();
             dataTransfer.setData('text/html', signatureData);
 
@@ -94,6 +96,14 @@ function insertSignature(targetElement, isContentEditable, profileIndex, useExec
             });
 
             targetElement.dispatchEvent(pasteEvent);
+
+            // Alguns editores (ex.: Cervello) ignoram paste sintético. Se o
+            // conteúdo não mudou, tenta execCommand('insertHTML') como fallback.
+            setTimeout(() => {
+                if (targetElement.innerHTML === before) {
+                    document.execCommand('insertHTML', false, signatureData);
+                }
+            }, 150);
         }
 
         logAction(`Assinatura "${profileName}" injetada`);
