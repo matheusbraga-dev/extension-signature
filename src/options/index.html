@@ -218,17 +218,29 @@
           <div class="row-actions">
             <button id="export-btn" class="btn" style="flex: 1;">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
-              Exportar JSON
+              Baixar arquivo
             </button>
-            <button id="import-btn" class="btn" style="flex: 1;">
+            <button id="import-file-btn" class="btn" style="flex: 1;">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
-              Importar JSON
+              Importar arquivo
             </button>
+            <input type="file" id="import-file" accept=".json,application/json" hidden>
           </div>
 
           <div class="field">
             <label for="backup-json">Backup JSON</label>
-            <textarea id="backup-json" rows="5" placeholder="Cole o JSON aqui..."></textarea>
+            <textarea id="backup-json" rows="5" placeholder="Cole o JSON aqui ou use o botão Baixar arquivo."></textarea>
+          </div>
+
+          <div class="row-actions">
+            <button id="export-json-btn" class="btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+              Exportar para a caixa
+            </button>
+            <button id="import-json-btn" class="btn" style="flex: 1;">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+              Importar da caixa
+            </button>
           </div>
         </div>
 
