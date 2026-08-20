@@ -44,8 +44,20 @@ function htmlToPlainText(html) {
 }
 
 function findActiveEditorTarget() {
-    const activeElement = document.activeElement;
+    let activeElement = document.activeElement;
     if (!activeElement) return null;
+
+    // Editor pode estar dentro de um iframe same-origin (ex.: Kendo no
+    // Cervello). Quando o foco está num iframe, document.activeElement do
+    // frame principal retorna o próprio <iframe>; descemos recursivamente
+    // para achar o elemento editável real dentro do documento dele.
+    while (activeElement && activeElement.tagName === 'IFRAME') {
+        const innerDoc = activeElement.contentDocument;
+        if (!innerDoc) break; // cross-origin ou sem acesso
+        const innerActive = innerDoc.activeElement;
+        if (!innerActive || innerActive === innerDoc.body) break;
+        activeElement = innerActive;
+    }
 
     const richTextEditor = activeElement.closest ? activeElement.closest('[contenteditable="true"]') : null;
     const isContentEditable = activeElement.isContentEditable || richTextEditor !== null;

@@ -74,12 +74,15 @@ function insertSignature(targetElement, isContentEditable, profileIndex, useExec
 
     if (isContentEditable) {
         targetElement.focus();
+        // Editor pode estar em outro documento (ex.: iframe do Kendo/Cervello).
+        // O execCommand deve atuar no documento dono do elemento.
+        const editorDoc = targetElement.ownerDocument || document;
 
         if (useExecCommand) {
             // O Gmail não responde a eventos de paste sintéticos. O
             // execCommand('insertHTML') insere no ponto de inserção atual e
             // preserva o histórico de undo do editor.
-            document.execCommand('insertHTML', false, signatureData);
+            editorDoc.execCommand('insertHTML', false, signatureData);
         } else {
             const before = targetElement.innerHTML;
 
@@ -101,7 +104,7 @@ function insertSignature(targetElement, isContentEditable, profileIndex, useExec
             // conteúdo não mudou, tenta execCommand('insertHTML') como fallback.
             setTimeout(() => {
                 if (targetElement.innerHTML === before) {
-                    document.execCommand('insertHTML', false, signatureData);
+                    editorDoc.execCommand('insertHTML', false, signatureData);
                 }
             }, 150);
         }
