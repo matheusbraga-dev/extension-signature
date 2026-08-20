@@ -32,6 +32,21 @@ function normalizeAllowedSites(rawSites, defaults) {
 
 // Placeholders personalizados: lista de { key, value }. As chaves são
 // case-insensitive e duplicadas são removidas.
+function normalizeSiteProfileMap(raw, profiles) {
+    const result = {};
+    if (!raw || typeof raw !== 'object') return result;
+
+    const validIds = new Set(profiles.map((profile) => profile.id));
+    Object.entries(raw).forEach(([site, profileId]) => {
+        const normalizedSite = normalizeSiteEntry(site);
+        if (!normalizedSite) return;
+        if (typeof profileId !== 'string' || !validIds.has(profileId)) return;
+        result[normalizedSite] = profileId;
+    });
+
+    return result;
+}
+
 function normalizeFabPosition(raw) {
     if (raw && typeof raw === 'object' && typeof raw.x === 'number' && typeof raw.y === 'number') {
         return { x: raw.x, y: raw.y };
@@ -64,6 +79,7 @@ function createDefaultState() {
         profiles: [{ id: 'default', name: 'Padrão', html: '' }],
         allowedSites: [...DEFAULT_ALLOWED_SITES],
         placeholders: [],
+        siteProfileMap: {},
         showFloatingButton: true,
         cervelloFabPosition: null
     };
@@ -100,22 +116,32 @@ function normalizeState(raw) {
     const showFloatingButton = raw.showFloatingButton !== false;
     const cervelloFabPosition = normalizeFabPosition(raw.cervelloFabPosition);
 
-    return { activeProfileId, profiles, allowedSites, placeholders, showFloatingButton, cervelloFabPosition };
+    return {
+        activeProfileId,
+        profiles,
+        allowedSites,
+        placeholders,
+        siteProfileMap: normalizeSiteProfileMap(raw.siteProfileMap, profiles),
+        showFloatingButton,
+        cervelloFabPosition
+    };
 }
 
 function stateFromStorage(syncObj, legacyHtml) {
     if (syncObj && syncObj[STORAGE_KEY]) return normalizeState(syncObj[STORAGE_KEY]);
 
     if (legacyHtml) {
+        const legacyProfiles = [{
+            id: 'default',
+            name: 'Padrão',
+            html: typeof sanitizeSignatureHtml === 'function' ? sanitizeSignatureHtml(legacyHtml) : legacyHtml
+        }];
         return {
             activeProfileId: 'default',
-            profiles: [{
-                id: 'default',
-                name: 'Padrão',
-                html: typeof sanitizeSignatureHtml === 'function' ? sanitizeSignatureHtml(legacyHtml) : legacyHtml
-            }],
+            profiles: legacyProfiles,
             allowedSites: [...DEFAULT_ALLOWED_SITES],
             placeholders: [],
+            siteProfileMap: {},
             showFloatingButton: true,
             cervelloFabPosition: null
         };
