@@ -9,32 +9,32 @@
 function createProfileMenu(options) {
     const { trigger, menuId, resolveEditor, useExecCommand } = options;
 
+    injectSharedStyles();
+
     const menu = document.createElement('div');
     menu.id = menuId;
-    menu.style.cssText = `
-        display: none; position: fixed; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        background: #FFFFFF; border: 1px solid #DFE1E6; border-radius: 8px;
-        box-shadow: 0 12px 32px rgba(9, 30, 66, 0.25);
-        padding: 6px 0; z-index: 2147483647;
-        min-width: 260px; max-width: 90vw; max-height: 80vh; overflow-y: auto;
-    `;
+    menu.className = 'M-sig-menu';
+    menu.style.display = 'none';
+    menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', 'Inserir assinatura');
     document.body.appendChild(menu);
 
     // Painel de pré-visualização do perfil (aparece ao passar o mouse).
     const preview = document.createElement('div');
-    preview.style.cssText = `
-        display: none; position: fixed; z-index: 2147483646; pointer-events: none;
-        background: #FFFFFF; border: 1px solid #DFE1E6; border-radius: 8px;
-        box-shadow: 0 12px 32px rgba(9, 30, 66, 0.2);
-        padding: 12px 14px; max-width: 320px; max-height: 240px;
-        overflow-y: auto; color: #172B4D; font-size: 13px; line-height: 1.45;
-    `;
+    preview.className = 'M-sig-preview';
+    preview.style.display = 'none';
     document.body.appendChild(preview);
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'M-sig-menu-search';
+    searchInput.setAttribute('placeholder', 'Buscar perfil...');
+    searchInput.setAttribute('aria-label', 'Buscar perfil');
 
     function close() {
         menu.style.display = 'none';
         preview.style.display = 'none';
+        trigger.setAttribute('aria-expanded', 'false');
     }
 
     function showPreview(anchor, html) {
@@ -57,6 +57,7 @@ function createProfileMenu(options) {
     }
 
     function open() {
+        injectSharedStyles();
         document.querySelectorAll(`#${menuId}`).forEach((m) => {
             if (m !== menu) m.style.display = 'none';
         });
@@ -68,14 +69,16 @@ function createProfileMenu(options) {
 
         menu.innerHTML = '';
         menu.style.display = 'block';
+        trigger.setAttribute('aria-expanded', 'true');
 
         const header = document.createElement('div');
+        header.className = 'M-sig-menu-head';
         header.textContent = 'INSERIR ASSINATURA';
-        header.style.cssText = 'font-size: 11px; font-weight: 700; color: #6B778C; padding: 6px 12px 2px; margin-bottom: 4px; border-bottom: 1px solid #EBECF0;';
         menu.appendChild(header);
+        menu.appendChild(searchInput);
 
         function clearBody() {
-            while (menu.lastChild && menu.lastChild !== header) {
+            while (menu.lastChild && menu.lastChild !== searchInput) {
                 menu.removeChild(menu.lastChild);
             }
         }
@@ -83,27 +86,39 @@ function createProfileMenu(options) {
         function renderProfiles(state) {
             clearBody();
             const profiles = (state && Array.isArray(state.profiles)) ? state.profiles : [];
+            const query = (searchInput.value || '').trim().toLowerCase();
+            const filtered = query ? profiles.filter((p) => p.name.toLowerCase().includes(query)) : profiles;
 
-            if (profiles.length === 0) {
-                const empty = document.createElement('div');
-                empty.textContent = 'Nenhum perfil configurado.';
-                empty.style.cssText = 'padding: 8px 12px; font-size: 12px; color: #DE350B;';
-                menu.appendChild(empty);
+            if (filtered.length === 0) {
+                const note = document.createElement('div');
+                note.className = 'M-sig-menu-item is-empty-note';
+                note.textContent = profiles.length === 0 ? 'Nenhum perfil configurado.' : 'Nenhum perfil encontrado.';
+                menu.appendChild(note);
                 return;
             }
 
-            profiles.forEach((profile, index) => {
+            filtered.forEach((profile, visibleIndex) => {
+                const originalIndex = profiles.indexOf(profile);
                 const item = document.createElement('div');
-                item.dataset.profile = String(index);
+                item.className = 'M-sig-menu-item';
+                item.setAttribute('role', 'menuitem');
+                item.setAttribute('tabindex', '0');
                 item.textContent = profile.name;
-                item.style.cssText = `
-                    padding: 8px 12px; cursor: pointer; font-size: 13px;
-                    color: #172B4D; font-family: -apple-system, sans-serif;
-                    transition: background 0.1s; display: block; white-space: nowrap;
-                    overflow: hidden; text-overflow: ellipsis;
-                `;
+                item.dataset.profile = String(originalIndex);
+
+                const activateItem = () => {
+                    close();
+                    const target = resolveEditor();
+                    if (!target) {
+                        showToast('Selecione primeiro um campo de texto editável.');
+                        return;
+                    }
+                    cachedState = state;
+                    insertSignature(target.targetElement, target.isContentEditable, originalIndex, useExecCommand);
+                };
+
                 item.onmouseover = () => {
-                    item.style.background = '#F4F5F7';
+                    item.style.background = 'var(--m-bg-soft)';
                     const hydrated = typeof applyDynamicPlaceholders === 'function'
                         ? applyDynamicPlaceholders(profile.html, state.placeholders)
                         : profile.html;
@@ -116,37 +131,56 @@ function createProfileMenu(options) {
                     item.style.background = 'transparent';
                     preview.style.display = 'none';
                 };
-
                 item.addEventListener('mousedown', (ev) => {
                     ev.preventDefault();
                     ev.stopPropagation();
-                    close();
-
-                    const target = resolveEditor();
-                    if (!target) {
-                        showToast('Selecione primeiro um campo de texto editável.');
-                        return;
+                    activateItem();
+                });
+                item.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter') {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        activateItem();
+                    } else if (ev.key === 'ArrowDown') {
+                        ev.preventDefault();
+                        moveFocus(1);
+                    } else if (ev.key === 'ArrowUp') {
+                        ev.preventDefault();
+                        moveFocus(-1);
                     }
-
-                    // Garante que a injeção use os dados mais recentes.
-                    cachedState = state;
-                    insertSignature(
-                        target.targetElement,
-                        target.isContentEditable,
-                        index,
-                        useExecCommand
-                    );
                 });
 
                 menu.appendChild(item);
             });
         }
 
+        function moveFocus(direction) {
+            const items = Array.from(menu.querySelectorAll('.M-sig-menu-item[role="menuitem"]'));
+            if (items.length === 0) return;
+            const idx = items.indexOf(document.activeElement);
+            const next = idx === -1 ? 0 : (idx + direction + items.length) % items.length;
+            items[next].focus();
+        }
+
+        searchInput.value = '';
+        searchInput.addEventListener('input', () => {
+            const stateNow = cachedState || createDefaultState();
+            renderProfiles(stateNow);
+            const first = menu.querySelector('.M-sig-menu-item[role="menuitem"]');
+            if (first) first.focus();
+        });
+        searchInput.addEventListener('keydown', (ev) => {
+            if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+                ev.preventDefault();
+                moveFocus(ev.key === 'ArrowDown' ? 1 : -1);
+            } else if (ev.key === 'Escape') {
+                ev.preventDefault();
+                close();
+            }
+        });
+
         let rendered = false;
 
-        // Renderiza imediatamente a partir do cache (quando disponível), para
-        // nunca ficar preso em "Carregando perfis...", e depois atualiza via
-        // storage. Tem fallback por timeout caso o storage não responda.
         if (cachedState) {
             rendered = true;
             renderProfiles(cachedState);
@@ -161,6 +195,8 @@ function createProfileMenu(options) {
         setTimeout(() => {
             if (!rendered) renderProfiles(cachedState || createDefaultState());
         }, 1500);
+
+        searchInput.focus();
     }
 
     // Fecha o menu clicando fora (fora do trigger e fora do próprio menu).
@@ -169,8 +205,13 @@ function createProfileMenu(options) {
             close();
         }
     });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.style.display === 'block') {
+            close();
+        }
+    });
 
-    return { menu, open, close };
+    return { menu, open, close, searchInput };
 }
 
 // Ativa o menu via mousedown (padrão para hosts que interceptam cliques,

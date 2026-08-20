@@ -13,6 +13,8 @@ function injectMButtonIntoToolbar(toolbar) {
     // Evita duplicatas na mesma barra
     if (toolbar.querySelector(`#${M_BTN_ID}`)) return;
 
+    injectSharedStyles();
+
     const container = document.createElement('div');
     container.id = M_BTN_ID;
     container.style.position = 'relative';
@@ -24,6 +26,8 @@ function injectMButtonIntoToolbar(toolbar) {
     btn.innerHTML = M_ICON_SVG;
     btn.title = "M - Inserir Assinatura";
     btn.setAttribute('aria-label', 'Inserir Assinatura');
+    btn.setAttribute('aria-haspopup', 'menu');
+    btn.setAttribute('aria-expanded', 'false');
 
     btn.style.cssText = `
         background: transparent; border: none; cursor: pointer;
