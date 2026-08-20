@@ -62,7 +62,14 @@ MPopup.setProfileHtml = function (profileId, html) {
 };
 
 MPopup.persistState = function (onDone) {
-    saveState(MPopup.currentState, onDone, () => {
+    saveState(MPopup.currentState, () => {
+        if (isUsingLocalFallback()) {
+            MPopup.showStatusMessage('Assinatura grande demais para sync — salva apenas neste dispositivo.');
+            if (onDone) onDone();
+            return;
+        }
+        if (onDone) onDone();
+    }, () => {
         MPopup.refs.saveLabel.textContent = 'Salvar assinatura';
         MPopup.setDirty(true);
         MPopup.showStatusMessage('Falha ao salvar no sync. Tente novamente.');
