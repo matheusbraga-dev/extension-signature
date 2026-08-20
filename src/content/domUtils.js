@@ -10,7 +10,7 @@ const M_SHARED_STYLE_ID = 'M-shared-style';
 
 function getThemeCSS() {
     return `
-#${M_SHARED_STYLE_ID} {
+:root {
     --m-bg: #FFFFFF;
     --m-bg-soft: #F4F5F7;
     --m-border: #DFE1E6;
@@ -21,7 +21,7 @@ function getThemeCSS() {
     --m-shadow: 0 12px 32px rgba(9, 30, 66, 0.25);
 }
 @media (prefers-color-scheme: dark) {
-    #${M_SHARED_STYLE_ID} {
+    :root {
         --m-bg: #1F2430;
         --m-bg-soft: #2A303D;
         --m-border: #3A4356;
