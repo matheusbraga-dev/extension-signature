@@ -100,7 +100,7 @@ MOptions.initPlaceholders = function () {
             item.setAttribute('role', 'menuitem');
             item.addEventListener('mousedown', (e) => e.preventDefault());
             item.addEventListener('click', () => {
-                document.execCommand('insertText', false, `{{${placeholder.key}}}`);
+                insertTextAtCursor(profileEditor, `{{${placeholder.key}}}`);
                 optionsPlaceholderMenu.style.display = 'none';
                 profileEditor.focus();
             });

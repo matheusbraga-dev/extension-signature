@@ -15,6 +15,7 @@ const CONTENT_SCRIPTS = [
     'src/shared/utils/sanitize.js',
     'src/shared/utils/normalizer.js',
     'src/shared/utils/logger.js',
+    'src/shared/utils/editorCommands.js',
     'src/shared/api/storage.js',
     'src/content/index.js',
     'src/content/domUtils.js',
