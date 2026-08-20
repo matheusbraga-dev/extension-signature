@@ -20,9 +20,40 @@ function isCervello() {
     return /(^|\.)cervelloesm\.com\.br$/i.test(location.hostname);
 }
 
+// O editor do Cervello é um Kendo UI Editor: um <iframe src=""> (about:blank,
+// same-origin) cujo HTML editável fica no body. Localiza esses iframes e
+// retorna o elemento editável real dentro do documento deles.
+function findKendoEditorTarget() {
+    const iframeSelectors = 'iframe.k-content, iframe[title*="Editable area"], iframe[data-role="editor"]';
+    const iframes = document.querySelectorAll(iframeSelectors);
+    if (iframes.length === 0) return null;
+
+    for (const iframe of iframes) {
+        let innerDoc;
+        try {
+            innerDoc = iframe.contentDocument;
+        } catch (_err) {
+            innerDoc = null;
+        }
+        if (!innerDoc || !innerDoc.body) continue;
+
+        const editor = innerDoc.body.isContentEditable
+            ? innerDoc.body
+            : innerDoc.querySelector('[contenteditable="true"]');
+
+        if (editor) {
+            return { targetElement: editor, isContentEditable: true };
+        }
+    }
+
+    return null;
+}
+
 function resolveTargetEditor() {
     const focused = findActiveEditorTarget();
     if (focused) return focused;
+    const kendo = findKendoEditorTarget();
+    if (kendo) return kendo;
     const editors = document.querySelectorAll('[contenteditable="true"], textarea, input[type="text"]');
     const last = editors[editors.length - 1];
     if (!last) return null;
@@ -106,15 +137,20 @@ function injectFloatingButton() {
     if (!isCervello()) return;
     if (document.getElementById(CV_FAB_ID)) return;
 
+    injectSharedStyles();
+
     const fab = document.createElement('button');
     fab.id = CV_FAB_ID;
+    fab.className = 'M-sig-fab';
     fab.title = 'M - Inserir Assinatura';
     fab.setAttribute('aria-label', 'Inserir Assinatura');
+    fab.setAttribute('aria-haspopup', 'menu');
+    fab.setAttribute('aria-expanded', 'false');
     fab.innerHTML = M_ICON_SVG;
     fab.style.cssText = `
         position: fixed; right: 24px; bottom: 24px; z-index: 2147483647;
-        width: 52px; height: 52px; border-radius: 50%; border: none; cursor: grab;
-        background: #0A3A5C; color: #FFFFFF; display: flex; align-items: center;
+        width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--m-border);
+        cursor: grab; background: #0A3A5C; color: #FFFFFF; display: flex; align-items: center;
         justify-content: center; box-shadow: 0 8px 24px rgba(9, 30, 66, 0.35);
         transition: transform 0.15s, box-shadow 0.15s; touch-action: none;
         user-select: none; -webkit-user-select: none;

@@ -38,9 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-            navBtns.forEach((b) => b.classList.remove('active'));
+            navBtns.forEach((b) => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
             tabContents.forEach((t) => t.classList.remove('active'));
             btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
             document.getElementById(btn.dataset.target).classList.add('active');
         });
     });

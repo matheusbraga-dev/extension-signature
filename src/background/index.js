@@ -23,7 +23,8 @@ const CONTENT_SCRIPTS = [
     'src/content/injector.js',
     'src/content/observer.js',
     'src/content/gmail.js',
-    'src/content/cervello.js'
+    'src/content/cervello.js',
+    'src/content/in-context-onboarding.js'
 ];
 
 async function ensureStorageMigration() {
