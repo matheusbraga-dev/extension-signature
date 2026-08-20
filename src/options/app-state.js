@@ -32,7 +32,12 @@ MOptions.showStatus = function (message, isError) {
 };
 
 MOptions.persistState = function (onDone) {
-    saveState(MOptions.state, onDone, () => {
+    saveState(MOptions.state, () => {
+        if (isUsingLocalFallback()) {
+            MOptions.showStatus('Armazenamento grande demais para sync — salvo apenas neste dispositivo.', true);
+        }
+        if (onDone) onDone();
+    }, () => {
         MOptions.showStatus('Erro ao salvar no storage.sync.', true);
     });
 };
