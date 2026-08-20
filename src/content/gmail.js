@@ -84,6 +84,8 @@ function injectGmailButton(toolbar) {
     // Evita duplicatas na mesma barra
     if (toolbar.querySelector(`#${GM_BTN_ID}`)) return;
 
+    injectSharedStyles();
+
     const container = document.createElement('div');
     container.id = GM_BTN_ID;
     container.style.cssText = 'display:inline-flex;align-items:center;position:relative;margin-left:4px;';
@@ -92,6 +94,8 @@ function injectGmailButton(toolbar) {
     btn.innerHTML = M_ICON_SVG;
     btn.title = 'Inserir Assinatura';
     btn.setAttribute('aria-label', 'Inserir Assinatura');
+    btn.setAttribute('aria-haspopup', 'menu');
+    btn.setAttribute('aria-expanded', 'false');
     btn.style.cssText = `
         background: transparent; border: none; cursor: pointer; padding: 0 6px;
         color: #5F6368; display: flex; align-items: center; justify-content: center;

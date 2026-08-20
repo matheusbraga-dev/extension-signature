@@ -106,15 +106,20 @@ function injectFloatingButton() {
     if (!isCervello()) return;
     if (document.getElementById(CV_FAB_ID)) return;
 
+    injectSharedStyles();
+
     const fab = document.createElement('button');
     fab.id = CV_FAB_ID;
+    fab.className = 'M-sig-fab';
     fab.title = 'M - Inserir Assinatura';
     fab.setAttribute('aria-label', 'Inserir Assinatura');
+    fab.setAttribute('aria-haspopup', 'menu');
+    fab.setAttribute('aria-expanded', 'false');
     fab.innerHTML = M_ICON_SVG;
     fab.style.cssText = `
         position: fixed; right: 24px; bottom: 24px; z-index: 2147483647;
-        width: 52px; height: 52px; border-radius: 50%; border: none; cursor: grab;
-        background: #0A3A5C; color: #FFFFFF; display: flex; align-items: center;
+        width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--m-border);
+        cursor: grab; background: #0A3A5C; color: #FFFFFF; display: flex; align-items: center;
         justify-content: center; box-shadow: 0 8px 24px rgba(9, 30, 66, 0.35);
         transition: transform 0.15s, box-shadow 0.15s; touch-action: none;
         user-select: none; -webkit-user-select: none;
