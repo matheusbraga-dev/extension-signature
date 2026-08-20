@@ -18,14 +18,14 @@ body {
 
 /* ---------- Layout ---------- */
 .page {
-  max-width: 1240px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 48px 32px 80px;
 }
 
 .layout-grid {
   display: grid;
-  grid-template-columns: 268px 1fr;
+  grid-template-columns: 240px 1fr;
   gap: 32px;
   align-items: start;
 }

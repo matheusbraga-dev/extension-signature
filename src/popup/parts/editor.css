@@ -2,7 +2,7 @@
 .editor-wrap { margin-bottom: 8px; }
 
 #editor {
-  min-height: 150px;
+  min-height: 110px;
   padding: 15px 16px;
   background: var(--paper);
   border: 1px solid var(--line-paper);
