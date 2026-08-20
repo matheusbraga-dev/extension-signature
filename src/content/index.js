@@ -79,10 +79,10 @@ function insertSignature(targetElement, isContentEditable, profileIndex, useExec
         const editorDoc = targetElement.ownerDocument || document;
 
         if (useExecCommand) {
-            // O Gmail não responde a eventos de paste sintéticos. O
-            // execCommand('insertHTML') insere no ponto de inserção atual e
-            // preserva o histórico de undo do editor.
-            editorDoc.execCommand('insertHTML', false, signatureData);
+            // O Gmail não responde a eventos de paste sintéticos. Usamos o
+            // helper moderno (Selection/Range), que tem fallback interno para
+            // execCommand onde o host depender dele.
+            insertHtmlAtCursor(targetElement, signatureData);
         } else {
             const before = targetElement.innerHTML;
 
@@ -101,10 +101,10 @@ function insertSignature(targetElement, isContentEditable, profileIndex, useExec
             targetElement.dispatchEvent(pasteEvent);
 
             // Alguns editores (ex.: Cervello) ignoram paste sintético. Se o
-            // conteúdo não mudou, tenta execCommand('insertHTML') como fallback.
+            // conteúdo não mudou, tenta a inserção direta como fallback.
             setTimeout(() => {
                 if (targetElement.innerHTML === before) {
-                    editorDoc.execCommand('insertHTML', false, signatureData);
+                    insertHtmlAtCursor(targetElement, signatureData);
                 }
             }, 150);
         }

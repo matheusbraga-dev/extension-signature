@@ -31,7 +31,7 @@ MPopup.initEditor = function () {
                 .join('<br>');
         }
 
-        document.execCommand('insertHTML', false, clean);
+        insertHtmlAtCursor(editor, clean);
     });
 
     // ---------- Ferramentas de formatação ----------
@@ -55,7 +55,7 @@ MPopup.initEditor = function () {
 
     btnLink.addEventListener('click', () => {
         const url = prompt('Digite a URL do link:');
-        if (url) document.execCommand('createLink', false, url);
+        if (url) createLinkAtCursor(editor, url);
     });
 
     editor.addEventListener('keyup', MPopup.updateToolbarState);
@@ -92,7 +92,7 @@ MPopup.initEditor = function () {
                 item.setAttribute('role', 'menuitem');
                 item.addEventListener('mousedown', (e) => e.preventDefault());
                 item.addEventListener('click', () => {
-                    document.execCommand('insertText', false, `{{${placeholder.key}}}`);
+                    insertTextAtCursor(editor, `{{${placeholder.key}}}`);
                     placeholderMenu.style.display = 'none';
                     editor.focus();
                     MPopup.setDirty(editor.innerHTML !== MPopup.lastSaved);
