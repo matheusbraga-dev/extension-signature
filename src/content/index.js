@@ -52,7 +52,15 @@ function getProfileHtml(profileIndex) {
         return cachedState.profiles[profileIndex].html;
     }
 
-    const active = cachedState.profiles.find((profile) => profile.id === cachedState.activeProfileId);
+    // Perfil padrão específico do site atual, se configurado; senão o ativo.
+    const host = (typeof location !== 'undefined' && location.hostname)
+        ? location.hostname.toLowerCase()
+        : '';
+    const siteProfile = host && cachedState.siteProfileMap && cachedState.siteProfileMap[host];
+    const active = siteProfile
+        ? cachedState.profiles.find((profile) => profile.id === siteProfile)
+        : cachedState.profiles.find((profile) => profile.id === cachedState.activeProfileId);
+
     return active ? active.html : cachedState.profiles[0].html;
 }
 

@@ -102,3 +102,29 @@ test('stateFromStorage lida com sync, legacy e vazio', () => {
     const empty = stateFromStorage({}, null);
     assert.deepStrictEqual(empty.profiles, [{ id: 'default', name: 'Padrão', html: '' }]);
 });
+
+test('createDefaultState inclui siteProfileMap vazio', () => {
+    const state = createDefaultState();
+    assert.deepStrictEqual(state.siteProfileMap, {});
+});
+
+test('normalizeState preserva siteProfileMap válido e descarta inválidos', () => {
+    const state = normalizeState({
+        profiles: [{ id: 'a', name: 'A' }, { id: 'b', name: 'B' }],
+        siteProfileMap: {
+            'jira.empresa.com': 'a',
+            'mail.google.com': 'b',
+            'domínio inválido espaço': 'a',
+            'outro.site.com': 'inexistente'
+        }
+    });
+    assert.deepStrictEqual(state.siteProfileMap, {
+        'jira.empresa.com': 'a',
+        'mail.google.com': 'b'
+    });
+});
+
+test('normalizeState define siteProfileMap como vazio quando ausente', () => {
+    const state = normalizeState({ profiles: [{ html: '' }] });
+    assert.deepStrictEqual(state.siteProfileMap, {});
+});

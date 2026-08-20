@@ -37,6 +37,23 @@
   overflow-wrap: anywhere;
 }
 
+.site-item-profile {
+  flex-wrap: wrap;
+}
+
+.site-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-profile-select {
+  min-width: 140px;
+  width: auto;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
 .site-item > span:first-child::before {
   content: "";
   width: 8px;
